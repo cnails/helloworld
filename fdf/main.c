@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/16 15:17:24 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/16 18:39:08 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,7 @@ void	ft_up(t_img *tmp)
 
 int deal_key(int key, t_img *tmp)
 {
+	int i = 5;
 	if (key == 53)
 		exit (0);
 	else if (key == 8)
@@ -280,11 +281,21 @@ int deal_key(int key, t_img *tmp)
 		{*/
 		ft_clear_window(tmp);
 	}
+	// else if (key == 0)
+	// {
+	// 	ft_clear_window(tmp);
+	// 	ft_zoom(tmp);
+	// 	ft_im
+	// }
 	else if (key == 124)
 	{
-		ft_clear_window(tmp);
-		ft_right(tmp);
-		ft_image(*tmp, &tmp->list);
+		while (i--)
+		{
+			sleep(1);
+			ft_clear_window(tmp);
+			ft_right(tmp);
+			ft_image(*tmp, &tmp->list);
+		}
 	}
 	else if (key == 123)
 	{
