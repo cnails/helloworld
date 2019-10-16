@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/16 11:51:04 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/16 14:50:22 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@ typedef struct	s_pol
 	int		endian;
 }				t_pol;
 
-typedef struct	s_img
-{
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_pol	img;
-	int		f_color;
-}				t_img;
 
 typedef struct s_line
 {
@@ -53,6 +46,16 @@ typedef struct	s_collect
 	struct s_collect	*next;
 }				t_collect;
 
-int		ft_kolvo_int_in_line(char *str);
 
+typedef struct	s_img
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_pol	img;
+	int		f_color;
+	t_collect list;
+}				t_img;
+
+int		ft_kolvo_int_in_line(char *str);
+// cc -I /usr/local/include/ main.c  -L libft -lft -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
 #endif

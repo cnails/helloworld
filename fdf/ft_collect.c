@@ -6,13 +6,13 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 20:56:58 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/16 11:39:43 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/16 12:13:29 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
 
-int		ft_kolvo_line(int fd, char *line)
+/*int		ft_kolvo_line(int fd, char *line)
 {
 	double y;
 
@@ -46,16 +46,14 @@ int		ft_collect1(char *line, t_collect *col, int fd)
 	}
 }
 
-int		main(void)
-{
 	int			fd;
 	char		*line;
 	t_collect	*col;
-
+// 1234567890Aa!@
 	fd = open("42.fdf", O_RDONLY);
 	if (!(col = (t_collect *)malloc(sizeof(t_collect))))
 		return (0);
 	get_next_line(fd, &line);
 	ft_collect1(line, col, fd);
 	close(fd);
-}
+*/
