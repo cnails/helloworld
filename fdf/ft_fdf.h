@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/17 16:26:19 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/17 22:12:31 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ typedef struct	s_img
 	t_pol	img;
 	int		f_color;
 	int		f_gv;
+	int		s_x;
+	int		s_y;
 	int		zoom;
 	double	dlina;
 	int		shir;
@@ -68,5 +70,17 @@ typedef struct	s_img
 }				t_img;
 
 int		ft_kolvo_int_in_line(char *str);
+t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp);
+double		ft_collect_z(double x, double y, char *line, char *av, t_img img);
+double	ft_return_nbr(double x, char *str, t_img img);
+double		ft_getnbr(char *str);
+int			ft_kolvo_line(int fd, char *line);
+int		ft_kolvo_int_in_line(char *str);
+t_collect	*ft_svyaz(t_collect	*node, int x, int y);
+t_collect		*ft_get_svyaz(t_collect	*node, int x);
+void		ft_kostil(void);
+void	ft_start_0(t_collect *col, char *av, int ac, t_img *tmp);
+void	ft_setpam(t_img *tmp);
+
 // cc -I /usr/local/include/ main.c  -L libft -lft -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit
 #endif
