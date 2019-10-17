@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/17 11:57:13 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/17 13:05:34 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct	s_img
 	t_pol	img;
 	int		f_color;
 	int		f_gv;
+	int		zoom;
 	t_collect list;
 }				t_img;
 

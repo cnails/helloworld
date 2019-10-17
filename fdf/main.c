@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/17 12:21:13 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/17 14:25:41 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 
 void		ft_kostil()
 {
-	int i = 10240;
+	int i = 20;
 
-	while (i--)
+	while (i-- > 2)
 		close(i);
 }
 
-t_collect		*ft_get_svyaz(t_collect	*node, t_int i, int x, int y)
+t_collect		*ft_get_svyaz(t_collect	*node, int x)
 {
-//	if (i.y < y - 1)
-//	{
+	// if (i.y < y - 1)
+	// {
 		while (x--)
 		{
 			node = node->next;
 		}
-//	}
+	// }
 	return (node);
 }
 
@@ -40,12 +40,12 @@ t_collect	*ft_svyaz(t_collect	*node, int x, int y)
 
 	i.y = 0;
 	head = node;
-	while (i.y < y)
+	while (i.y < y - 2)
 	{
 		i.x = 0;
 		while (i.x < x)
 		{
-			node->svyaz = ft_get_svyaz(node, i, x, y);
+			node->svyaz = ft_get_svyaz(node, x);
 			node = node->next;
 			i.x++;
 		}
@@ -85,7 +85,7 @@ int			ft_kolvo_line(int fd, char *line)
 		y++;
 		free(line);
 	}
-	return (y * 10);
+	return (y);
 }
 
 double		ft_getnbr(char *str)
@@ -110,18 +110,18 @@ double		ft_getnbr(char *str)
 	return (nbr * sign);
 }
 
-double	ft_return_nbr(double x, char *str)
+double	ft_return_nbr(double x, char *str, t_img img)
 {
 	int i;
 
 	i = 0;
-	while (str[i] && x > 10)
+	while (str[i] && x > img.zoom)
 	{
 		if (ft_isdigit(str[i]))
 		{
 			while (ft_isdigit(str[i]))
 				i++;
-			x -= 10;
+			x -= img.zoom;
 		}
 		i++;
 	}
@@ -130,49 +130,47 @@ double	ft_return_nbr(double x, char *str)
 	return (0);
 }
 
-double		ft_collect_z(double x, double y, char *line, char *av)
+double		ft_collect_z(double x, double y, char *line, char *av, t_img img)
 {
 	double z;
 	int fd;
 
 	fd = open(av, O_RDONLY);
-	while (get_next_line(fd, &line) && y > 10)
+	while (get_next_line(fd, &line) && y > img.zoom)
 	{
 		free(line);
-		y -= 10;
+		y -= img.zoom;
 	}
-	z = ft_return_nbr(x, line);
+	z = ft_return_nbr(x, line, img);
 	free(line);
 	return (z);
 }
 
-t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av)
+t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp)
 {
 	double		kol;
 	double		x;
 	double		y;
 	t_collect	*head;
 
-	kol = ft_kolvo_line(fd, line);
-	y = 10;
+	kol = ft_kolvo_line(fd, line) * (*tmp).zoom;
+	y = (*tmp).zoom;
 	head = col;
 	while (y <= kol)
 	{
-		x = 10;
-		while (x <= ft_kolvo_int_in_line(line) * 10)
+		x = (*tmp).zoom;
+		while (x <= ft_kolvo_int_in_line(line) * (*tmp).zoom)
 		{
 			col->x = x;
 			col->y = y;
-			col->z = ft_collect_z(col->x, col->y, line, av);
-			x += 10;
+			col->z = ft_collect_z(col->x, col->y, line, av, (*tmp));
+			x += (*tmp).zoom;
 			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
 				return (NULL);
 			col = col->next;
 		}
-		y += 10;
+		y += (*tmp).zoom;
 	}
-	col->dlina = ft_kolvo_int_in_line(line);
-	col->shir = kol / 10;
 	col->next = NULL;
 	return (head);
 }
@@ -264,18 +262,20 @@ void ft_diagonal_1(int x, int y, int xo, int yo, t_img tmp)
 	}
 }
 
-void	ft_start_0(t_collect *col, char **av, int ac)
+void	ft_start_0(t_collect *col, char **av, int ac, t_img img)
 {
 	int			fd;
 	char		*line;
+	int			fd1;
 
 	fd = open("42.fdf", O_RDONLY);
 	get_next_line(fd, &line);
 	if (ac != 2)
 		av[1] = "42.fdf";
-	col = ft_collect(line, col, fd, av[1]);
-	col = ft_svyaz(col, ft_kolvo_int_in_line(line), ft_kolvo_line(fd, line));
-
+	col = ft_collect(line, col, fd, av[1], &img);
+	fd1 =  open("42.fdf", O_RDONLY);
+	// printf("a = %i i = %i\n", ft_kolvo_int_in_line(line), ft_kolvo_line(fd1, line));
+	col = ft_svyaz(col, ft_kolvo_int_in_line(line), ft_kolvo_line(fd1, line));
 	free(line);
 	ft_kostil();
 }
@@ -373,6 +373,21 @@ void	ft_up(t_img *tmp)
 	start->y -= 10;
 }
 
+void 	ft_zoom(t_img *tmp)
+{
+	t_collect *start;
+
+	start = &tmp->list;
+	while (start->next)
+	{
+		start->y += 1;
+		start->x += 1;
+		start = start->next;
+	}
+	start->x += 1;
+	start->y += 1;
+}
+
 int deal_key(int key, t_img *tmp)
 {
 	if (key == 53)
@@ -404,12 +419,14 @@ int deal_key(int key, t_img *tmp)
 		{*/
 		ft_clear_window(tmp);
 	}
-	// else if (key == 0)
-	// {
-	// 	ft_clear_window(tmp);
-	// 	ft_zoom(tmp);
-	// 	ft_im
-	// }
+	else if (key == 12)
+	{
+		ft_clear_window(tmp);
+		(*tmp).zoom += 1;
+		ft_zoom(tmp);
+		ft_image(*tmp, &tmp->list);
+
+	}
 	else if (key == 124)
 	{
 			ft_clear_window(tmp);
@@ -444,13 +461,14 @@ int main(int ac, char **av)
 
 	if (!(col = (t_collect *)malloc(sizeof(t_collect))))
 		return (0);
-	ft_start_0(col, av, ac);
 	tmp.list = *col;
-	tmp.f_color	= 0;;
+	tmp.f_color	= 0;
+	tmp.zoom = 23;
 	tmp.mlx_ptr = mlx_init();
 	tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, 500, 500, "hello world");
 	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, 500, 500);
 	tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
+	ft_start_0(col, av, ac, tmp);
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 	ft_image(tmp, col);
 	mlx_key_hook(tmp.win_ptr, deal_key, (void*)&tmp);
