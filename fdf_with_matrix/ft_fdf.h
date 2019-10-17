@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/16 18:51:51 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/17 11:56:52 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ typedef struct	s_collect
 	double 				x;
 	double				y;
 	double			 	z;
-	struct s_collect	*fuck_go_back;
+	double				dlina;
+	double				shir;
 	struct s_collect	*svyaz;
 	struct s_collect	*next;
 }				t_collect;

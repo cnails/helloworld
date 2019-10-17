@@ -3,15 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/16 18:39:08 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/17 12:21:13 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
 #include <math.h>
+
+void		ft_kostil()
+{
+	int i = 10240;
+
+	while (i--)
+		close(i);
+}
+
+t_collect		*ft_get_svyaz(t_collect	*node, t_int i, int x, int y)
+{
+//	if (i.y < y - 1)
+//	{
+		while (x--)
+		{
+			node = node->next;
+		}
+//	}
+	return (node);
+}
+
+t_collect	*ft_svyaz(t_collect	*node, int x, int y)
+{
+	t_collect	*head;
+	t_int		i;
+
+	i.y = 0;
+	head = node;
+	while (i.y < y)
+	{
+		i.x = 0;
+		while (i.x < x)
+		{
+			node->svyaz = ft_get_svyaz(node, i, x, y);
+			node = node->next;
+			i.x++;
+		}
+		i.y++;
+	}
+	return (head);
+}
+
 
 int		ft_kolvo_int_in_line(char *str)
 {
@@ -33,41 +75,105 @@ int		ft_kolvo_int_in_line(char *str)
 	return (kol);
 }
 
-
-int		ft_kolvo_line(int fd, char *line)
+int			ft_kolvo_line(int fd, char *line)
 {
 	double y;
 
 	y = 1;
 	while (get_next_line(fd, &line))
+	{
 		y++;
+		free(line);
+	}
 	return (y * 10);
 }
 
-t_collect	*ft_collect1(char *line, t_collect *col, int fd)
+double		ft_getnbr(char *str)
+{
+	double		nbr;
+	int		sign;
+	int		i;
+
+	i = 0;
+	sign = 1;
+	nbr = 0;
+	if (str[0] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		nbr = nbr * 10 + str[i] - '0';
+		i++;
+	}
+	return (nbr * sign);
+}
+
+double	ft_return_nbr(double x, char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] && x > 10)
+	{
+		if (ft_isdigit(str[i]))
+		{
+			while (ft_isdigit(str[i]))
+				i++;
+			x -= 10;
+		}
+		i++;
+	}
+	if (str[i])
+		return (ft_getnbr(str + i));
+	return (0);
+}
+
+double		ft_collect_z(double x, double y, char *line, char *av)
+{
+	double z;
+	int fd;
+
+	fd = open(av, O_RDONLY);
+	while (get_next_line(fd, &line) && y > 10)
+	{
+		free(line);
+		y -= 10;
+	}
+	z = ft_return_nbr(x, line);
+	free(line);
+	return (z);
+}
+
+t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av)
 {
 	double		kol;
 	double		x;
 	double		y;
 	t_collect	*head;
 
-	kol = ft_kolvo_line(fd, line) * 2;
-	y = 20;
+	kol = ft_kolvo_line(fd, line);
+	y = 10;
 	head = col;
-	while (y < kol)
+	while (y <= kol)
 	{
-		x = 20;
-		while (x < ft_kolvo_int_in_line(line) * 20)
+		x = 10;
+		while (x <= ft_kolvo_int_in_line(line) * 10)
 		{
 			col->x = x;
 			col->y = y;
-			x += 20;
-			if (!(col->next = (t_collect *)malloc(sizeof(t_collect))))
+			col->z = ft_collect_z(col->x, col->y, line, av);
+			x += 10;
+			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
 				return (NULL);
 			col = col->next;
 		}
-		y += 20;
+		y += 10;
 	}
+	col->dlina = ft_kolvo_int_in_line(line);
+	col->shir = kol / 10;
+	col->next = NULL;
 	return (head);
 }
 
@@ -158,24 +264,34 @@ void ft_diagonal_1(int x, int y, int xo, int yo, t_img tmp)
 	}
 }
 
-void	ft_start_0(t_collect *col)
+void	ft_start_0(t_collect *col, char **av, int ac)
 {
-	int		fd;
-	char	*line;
+	int			fd;
+	char		*line;
 
 	fd = open("42.fdf", O_RDONLY);
 	get_next_line(fd, &line);
-	col = ft_collect1(line, col, fd);
-	close(fd);
+	if (ac != 2)
+		av[1] = "42.fdf";
+	col = ft_collect(line, col, fd, av[1]);
+	col = ft_svyaz(col, ft_kolvo_int_in_line(line), ft_kolvo_line(fd, line));
+
+	free(line);
+	ft_kostil();
 }
 
 void	ft_image(t_img tmp, t_collect *col)
 {
 	t_collect	*col_1;
 
+	tmp.f_gv = 0;
 	while (col->next != NULL)
 	{
-		col_1 = col->next;
+		if (tmp.f_gv == 0)
+		{
+			col_1 = col->next;
+			tmp.f_gv = 1;
+		}
 		if (!col_1->next)
 			break ;
 		if (fabs(col_1->y - col->y) < fabs(col_1->x - col->x))
@@ -192,7 +308,15 @@ void	ft_image(t_img tmp, t_collect *col)
 			else
 				ft_diagonal_1(col->x , col->y, col_1->x, col_1->y, tmp);
 		}
+		if (tmp.f_gv == 1)
+		{
+			if (col->svyaz)
+				col_1 = col->svyaz;
+			tmp.f_gv = 2;
+			continue ;
+		}
 		col = col->next;
+		tmp.f_gv = 0;
 	}
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 }
@@ -251,7 +375,6 @@ void	ft_up(t_img *tmp)
 
 int deal_key(int key, t_img *tmp)
 {
-	int i = 5;
 	if (key == 53)
 		exit (0);
 	else if (key == 8)
@@ -289,13 +412,9 @@ int deal_key(int key, t_img *tmp)
 	// }
 	else if (key == 124)
 	{
-		while (i--)
-		{
-			sleep(1);
 			ft_clear_window(tmp);
 			ft_right(tmp);
 			ft_image(*tmp, &tmp->list);
-		}
 	}
 	else if (key == 123)
 	{
@@ -318,14 +437,14 @@ int deal_key(int key, t_img *tmp)
 	return (0);
 }
 
-int main()
+int main(int ac, char **av)
 {
 	t_collect	*col;
 	t_img		tmp;
 
 	if (!(col = (t_collect *)malloc(sizeof(t_collect))))
 		return (0);
-	ft_start_0(col);
+	ft_start_0(col, av, ac);
 	tmp.list = *col;
 	tmp.f_color	= 0;;
 	tmp.mlx_ptr = mlx_init();

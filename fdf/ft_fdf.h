@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/16 18:35:55 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/17 11:57:13 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,20 @@ typedef struct s_line
 	int x1;
 }				t_line;
 
+typedef	struct 	s_int
+{
+	int		x;
+	int		y;
+}				t_int;
+
 typedef struct	s_collect
 {
 	double 				x;
 	double				y;
 	double			 	z;
+	double				dlina;
+	double				shir;
+	struct s_collect	*svyaz;
 	struct s_collect	*next;
 }				t_collect;
 
@@ -53,6 +62,7 @@ typedef struct	s_img
 	void	*win_ptr;
 	t_pol	img;
 	int		f_color;
+	int		f_gv;
 	t_collect list;
 }				t_img;
 

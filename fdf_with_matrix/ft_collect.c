@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 20:56:58 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/16 21:06:01 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/17 11:39:53 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int			main(int ac, char **av)
 	if (ac != 2)
 		av[1] = "42.fdf";
 	end = ft_collect(line, col, fd, av[1]);
-	ft_svyaz(end, ft_kolvo_int_in_line(line), ft_kolvo_line(fd, line));
+	end = ft_svyaz(end, ft_kolvo_int_in_line(line), ft_kolvo_line(fd, line));
 	free(line);
 	ft_kostil();
 }
