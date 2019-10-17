@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/17 13:05:34 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/17 16:26:19 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ typedef struct	s_collect
 	double 				x;
 	double				y;
 	double			 	z;
-	double				dlina;
-	double				shir;
 	struct s_collect	*svyaz;
 	struct s_collect	*next;
 }				t_collect;
@@ -64,6 +62,8 @@ typedef struct	s_img
 	int		f_color;
 	int		f_gv;
 	int		zoom;
+	double	dlina;
+	int		shir;
 	t_collect list;
 }				t_img;
 
