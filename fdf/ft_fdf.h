@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/18 12:48:35 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 15:36:06 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,13 @@
 # include <unistd.h>
 # include <mlx.h>
 # include <stdlib.h>
+# define DL  1500
+# define DW  800
 
 typedef struct	s_pol
 {
 	void	*img_ptr;
+	void	*msg_ptr;
 	int		*img_data;
 	int		size_line;
 	int		bpp;

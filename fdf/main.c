@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/18 13:21:04 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 16:02:48 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,12 @@ void	ft_clear_window(t_img *tmp)
 	int		j;
 
 	i = 0;
-	while (i < 500)
+	while (i < DL)
 	{
 		j = 0;
-
-		while (j < 500)
+		while (j < DW)
 		{
-			(*tmp).img.img_data[i + j * 500] = color;
+			(*tmp).img.img_data[i + j * DL] = color;
 			j++;
 		}
 		i++;
@@ -57,7 +56,7 @@ void ft_diagonal(int x, int y, int xo, int yo, t_img tmp)
 	diag.x1 = x;
 	while (diag.x1 <= xo)
 	{
-		tmp.img.img_data[diag.x1 + diag.y1 * 500] = 0xFF0000;
+		tmp.img.img_data[diag.x1 + diag.y1 * DL] = 0xFF0000;
 		if (diag.d > 0)
 		{
 			diag.y1 = diag.y1 + diag.di;
@@ -86,7 +85,7 @@ void ft_diagonal_1(int x, int y, int xo, int yo, t_img tmp)
 	diag.x1 = x;
 	while (diag.y1 <= yo)
 	{
-		tmp.img.img_data[diag.x1 + diag.y1 * 500] = 0xFF0000;
+		tmp.img.img_data[diag.x1 + diag.y1 * DL] = 0xFF0000;
 		if (diag.d > 0)
 		{
 			diag.x1 = diag.x1 + diag.di;
@@ -145,9 +144,11 @@ void	ft_image(t_img tmp, t_collect *col)
 		col = col->next;
 		tmp.f_gv = 0;
 	}
+	// ft_clear_window(&tmp);
 	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
-	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 450, 5, 0xfffafa, "CLOSE");
+	printf("%d\n", tmp.mouse.button);
+	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, DL + 50, 5, 0xfffafa, "CLOSE");
 }
 
 // void	ft_right(t_img *tmp)
@@ -245,12 +246,33 @@ void	ft_zoom(t_img *tmp)
 	start->x *= 1.2;
 }
 
+void	destroy_msg(t_img *tmp)
+{
+	ft_clear_window(tmp);
+	ft_image(*tmp, &tmp->list);
+	(*tmp).mouse.button = 0;
+}
+
+int		msg_que(t_img *tmp)
+{
+	printf("test\n");
+	// (*tmp).img.msg_ptr = mlx_new_image((*tmp).mlx_ptr, DL / 3, DW / 3);
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2, DW / 2 - 40, 0xfffafa, "Do you want to close?");
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2 + 50, DW / 2, 0xfffafa, "YES");
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2 + 130, DW / 2, 0xfffafa, "NO");
+	(*tmp).mouse.button = 1;
+	return (0);
+}
+
 int		deal_key(int key, t_img *tmp)
 {
-	 (*tmp).s_x = 0;
-	 (*tmp).s_y = 0;
-	key == 53 ? exit (0) : 0;
-	key == 8 ? ft_clear_window(tmp) : 0;
+	(*tmp).s_x = 0;
+	(*tmp).s_y = 0;
+	if (key == 53)
+	{
+		msg_que(tmp) ? destroy_msg(tmp) : 0;
+	}
+	// key == 8 ? ft_clear_window(tmp) : 0;
 	key == 124 ? (*tmp).s_x += 5 : 0;
 	key == 123 ?( *tmp).s_x -= 5 : 0;
 	key == 125 ? (*tmp).s_y += 5 : 0;
@@ -258,8 +280,12 @@ int		deal_key(int key, t_img *tmp)
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
 	ft_setpar(tmp);
-	ft_clear_window(tmp);
-	ft_image(*tmp, &tmp->list);
+	if (!((*tmp).mouse.button))
+	{
+		ft_clear_window(tmp);
+		mlx_clear_window((*tmp).mlx_ptr, (*tmp).win_ptr);
+		ft_image(*tmp, &tmp->list);
+	}
 	return (0);
 }
 
@@ -305,24 +331,35 @@ int	mouse_move(int k, int x, int y, t_img *tmp)
 	// 	(*tmp).s_x = (int)&tmp->list.x;
 	// 	(*tmp).s_y = (int)&tmp->list.y;
 	// }
-	if (k == 1)
+	if (k == 1  && !(*tmp).mouse.button)
 	{
 		// ft_low_x(tmp);
-		printf("x = %i y = %i\n", x ,y);
+		// printf("x = %i y = %i\n", x ,y);
 		// (*tmp).s_x = x;
 		// (*tmp).s_y = y;
-		if (x > 400 && y < 30)
-			exit (0);
+		if (x > DL && y < 20)
+		{
+			msg_que(tmp);
+		}
 	}
-	// if (k == 2 && (*tmp).mouse.down == 0)
-	// {
-	// 	(*tmp).s_x = y;
-	// }
-	// printf("1\n");
-	ft_setpar(tmp);
-	ft_clear_window(tmp);
-	ft_image(*tmp, &tmp->list);
-	(*tmp).mouse.down = 0;
+	if (k == 1 && (*tmp).mouse.button)
+	{
+		if ((x > DL / 2 - 50 && x < DL / 2 + 140 && y > DW / 2 - 30 && y < DW / 2 + 10))
+		{
+			mlx_destroy_image((*tmp).mlx_ptr, (*tmp).img.img_ptr);
+			mlx_destroy_window((*tmp).mlx_ptr, (*tmp).win_ptr);
+			exit(0);
+		}
+		else if (x < DL + 50 && y > 20)
+		{
+			destroy_msg(tmp);
+		}
+	}
+	// ft_setpar(tmp);
+	// ft_clear_window(tmp);
+	// mlx_destroy_window((*tmp).mlx_ptr, (*tmp).win_ptr);
+	// mlx_clear_window((*tmp).mlx_ptr, (*tmp).win_ptr);
+	// ft_image(*tmp, &tmp->list);
 	return (0);
 }
 
@@ -334,8 +371,8 @@ int main(int ac, char **av)
 	if (!(col = (t_collect *)ft_memalloc(sizeof(t_collect))))
 		return (0);
 	tmp.mlx_ptr = mlx_init();
-	tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, 500, 500, "hello world");
-	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, 500, 500);
+	tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, DL + 100, DW + 100, "hello world");
+	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, DL, DW);
 	tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
 	tmp.zoom = 10;
 	ft_start_0(col, "42.fdf", ac, &tmp);
@@ -348,11 +385,8 @@ int main(int ac, char **av)
 	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
 	// mlx_hook(tmp.win_ptr, 4, 5, mouse_down, &tmp);
 	// mlx_hook(tmp.win_ptr, 4, 0, mouse_up, &tmp);
-	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
-	mlx_hook(tmp.win_ptr, 5, 5, mouse_move, &tmp);
-	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
+	mlx_hook(tmp.win_ptr, 5, 2, mouse_move, &tmp);
 	ft_image(tmp, col);
-	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_loop(tmp.mlx_ptr);
 	return (0);
 }
