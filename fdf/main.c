@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/18 13:08:51 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 13:21:04 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,9 @@ void	ft_image(t_img tmp, t_collect *col)
 		col = col->next;
 		tmp.f_gv = 0;
 	}
+	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
+	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 450, 5, 0xfffafa, "CLOSE");
 }
 
 // void	ft_right(t_img *tmp)
@@ -261,16 +263,16 @@ int		deal_key(int key, t_img *tmp)
 	return (0);
 }
 
-int	mouse_down(int k, int x, int y, t_img *tmp)
-{
-	// printf("1\n");
-	if (k == 1)
-		(*tmp).mouse.down = 1;
-	else
-		(*tmp).mouse.down = 0;
-	// printf("1\n");
-	return (0);
-}
+// int	mouse_down(int k, int x, int y, t_img *tmp)
+// {
+// 	// printf("1\n");
+// 	if (k == 1)
+// 		(*tmp).mouse.down = 1;
+// 	else
+// 		(*tmp).mouse.down = 0;
+// 	// printf("1\n");
+// 	return (0);
+// }
 
 // void	mouse_down(int k, t_img *tmp)
 // {
@@ -298,16 +300,24 @@ int	mouse_move(int k, int x, int y, t_img *tmp)
 	(*tmp).s_x = 0;
 	(*tmp).s_y = 0;
 	// printf("1\n");
-	if (k == 1 && (*tmp).mouse.down == 1)
+	// if (k == 2)
+	// {
+	// 	(*tmp).s_x = (int)&tmp->list.x;
+	// 	(*tmp).s_y = (int)&tmp->list.y;
+	// }
+	if (k == 1)
 	{
-		ft_low_x(&tmp);
-		(*tmp).s_x = x;
-		(*tmp).s_y = y;
+		// ft_low_x(tmp);
+		printf("x = %i y = %i\n", x ,y);
+		// (*tmp).s_x = x;
+		// (*tmp).s_y = y;
+		if (x > 400 && y < 30)
+			exit (0);
 	}
-	if (k == 2 && (*tmp).mouse.down == 0)
-	{
-		(*tmp).s_x = y;
-	}
+	// if (k == 2 && (*tmp).mouse.down == 0)
+	// {
+	// 	(*tmp).s_x = y;
+	// }
 	// printf("1\n");
 	ft_setpar(tmp);
 	ft_clear_window(tmp);
@@ -336,10 +346,13 @@ int main(int ac, char **av)
 	tmp.s_y = 0;
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
-	mlx_hook(tmp.win_ptr, 4, 5, mouse_down, &tmp);
+	// mlx_hook(tmp.win_ptr, 4, 5, mouse_down, &tmp);
 	// mlx_hook(tmp.win_ptr, 4, 0, mouse_up, &tmp);
+	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_hook(tmp.win_ptr, 5, 5, mouse_move, &tmp);
+	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	ft_image(tmp, col);
+	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_loop(tmp.mlx_ptr);
 	return (0);
 }
