@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/18 15:36:06 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 16:47:39 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,14 @@ typedef struct	s_collect
 	double 				x;
 	double				y;
 	double			 	z;
+	double				k_x;
+	double				k_y;
+	double				k_z;
 	struct s_collect	*svyaz;
 	struct s_collect	*next;
 }				t_collect;
 
-typedef struct	s_mouse 
+typedef struct	s_mouse
 {
 	int			down;
 	int			up;
@@ -73,6 +76,8 @@ typedef struct	s_img
 	int			f_gv;
 	int			s_x;
 	int			s_y;
+	int			k_x;
+	int			k_y;
 	int			zoom;
 	double		dlina;
 	int			shir;

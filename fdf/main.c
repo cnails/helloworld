@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/18 16:02:48 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 16:56:11 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	ft_clear_window(t_img *tmp)
 //	mlx_put_image_to_window((*tmp).mlx_ptr, (*tmp).win_ptr, (*tmp).img.img_ptr, 0, 0);
 }
 
-void ft_diagonal(int x, int y, int xo, int yo, t_img tmp)
+void ft_diagonal(double x, double y, double xo, double yo, t_img tmp)
 {
 	t_line diag;
 
@@ -68,7 +68,8 @@ void ft_diagonal(int x, int y, int xo, int yo, t_img tmp)
 //	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 }
 
-void ft_diagonal_1(int x, int y, int xo, int yo, t_img tmp)
+
+void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 {
 	t_line diag;
 
@@ -115,19 +116,19 @@ void	ft_image(t_img tmp, t_collect *col)
 			break ;
 		if (i != tmp.shir)
 		{
-			if (fabs(col_1->y - col->y) < fabs(col_1->x - col->x))
+			if (fabs((col_1->y + col_1->k_y) - (col->y + col_1->k_y)) < fabs((col_1->x + col_1->k_x) - (col->x + col_1->k_x)))
 			{
-				if (col->x > col_1->x)
-					ft_diagonal(col_1->x, col_1->y, col->x , col->y, tmp);
+				if (col->x + col->k_x > col_1->x + col_1->k_x)
+					ft_diagonal(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
 					else
-					ft_diagonal(col->x , col->y, col_1->x, col_1->y, tmp);
+					ft_diagonal(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
 			}
 			else
 			{
-				if (col->y > col_1->y)
-					ft_diagonal_1(col_1->x, col_1->y, col->x , col->y, tmp);
+				if (col->y + col->k_y > col_1->y + col_1->k_y)
+					ft_diagonal_1(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
 				else
-					ft_diagonal_1(col->x , col->y, col_1->x, col_1->y, tmp);
+					ft_diagonal_1(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
 				}
 		}
 		if (i == tmp.shir)
@@ -144,74 +145,29 @@ void	ft_image(t_img tmp, t_collect *col)
 		col = col->next;
 		tmp.f_gv = 0;
 	}
-	// ft_clear_window(&tmp);
-	// mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, 100, 100, 0xfffafa, "CLOSE");
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 	printf("%d\n", tmp.mouse.button);
 	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, DL + 50, 5, 0xfffafa, "CLOSE");
 }
 
-// void	ft_right(t_img *tmp)
-// {
-// 	t_collect *start;
+void	destroy_msg(t_img *tmp)
+{
+	ft_clear_window(tmp);
+	ft_image(*tmp, &tmp->list);
+	(*tmp).mouse.button = 0;
+}
 
-// 	start = &tmp->list;
-// 	while (start->next)
-// 	{
-// 		start->x += 10;
-// 		start = start->next;
-// 	}
-// 	start->x += 10;
-// }
-
-// void	ft_left(t_img *tmp)
-// {
-// 	t_collect *start;
-
-// 	start = &tmp->list;
-// 	while (start->next)
-// 	{
-// 		start->x -= 10;
-// 		start = start->next;
-// 	}
-// 	start->x -= 10;
-// }
-
-// void	ft_down(t_img *tmp)
-// {
-// 	t_collect *start;
-
-// 	start = &tmp->list;
-// 	while (start->next)
-// 	{
-// 		start->y += 10;
-// 		start = start->next;
-// 	}
-// 	start->y += 10;
-// }
-
-// void	ft_up(t_img *tmp)
-// {
-// 	t_collect *start;
-
-// 	start = &tmp->list;
-// 	while (start->next)
-// 	{
-// 		start->y -= 10;
-// 		start = start->next;
-// 	}
-// 	start->y -= 10;
-// }
 
 void	ft_setpar(t_img *tmp)
 {
 	t_collect *start;
 
+
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->x += (*tmp).s_x;
-		start->y += (*tmp).s_y;
+		start->k_x += (*tmp).s_x;
+		start->k_y += (*tmp).s_y;
 		start = start->next;
 	}
 }
@@ -223,12 +179,12 @@ void	ft_azoom(t_img *tmp)
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->y /= 1.2;
-		start->x /= 1.2;
+		start->k_y /= 1.2;
+		start->k_x /= 1.2;
 		start = start->next;
 	}
-	start->y /= 1.2;
-	start->x /= 1.2;
+	start->k_y /= 1.2;
+	start->k_x /= 1.2;
 }
 
 void	ft_zoom(t_img *tmp)
@@ -238,20 +194,60 @@ void	ft_zoom(t_img *tmp)
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->y *= 1.2;
-		start->x *= 1.2;
+		start->k_y *= 1.2;
+		start->k_x *= 1.2;
 		start = start->next;
 	}
-	start->y *= 1.2;
-	start->x *= 1.2;
+	start->k_y *= 1.2;
+	start->k_x *= 1.2;
 }
 
-void	destroy_msg(t_img *tmp)
+void 	ft_rotation_y(t_collect *list)
 {
-	ft_clear_window(tmp);
-	ft_image(*tmp, &tmp->list);
-	(*tmp).mouse.button = 0;
+	double y;
+
+	y = (*list).k_y;
+	(*list).k_y = y * cos(M_PI / 180 * 5) - (*list).k_z * sin(M_PI / 180 * 5);
+	(*list).k_z = y * sin(M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
 }
+
+void	ft_rotate_x(t_collect *list)
+{
+	double x;
+
+	x = (*list).k_x;
+	(*list).k_x = x * cos(M_PI / 180 * 5) + (*list).k_z * sin(M_PI / 180 * 5);
+	(*list).k_z = -x * sin (M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
+}
+
+void	ft_rotate_z(t_collect *list)
+{
+	double x;
+	double y;
+
+	x = (*list).k_x;
+	y = (*list).k_y;
+	(*list).k_x = x * cos(M_PI / 180 * 5) - y * sin(M_PI / 180 * 5);
+	(*list).k_y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
+}
+
+void	ft_rotate(t_collect list)
+{
+	t_collect *start;
+
+	start = &list;
+	while (start->next)
+	{
+		printf ("n1 = %f\n", start->k_y);
+		ft_rotation_y(start);
+		printf ("n2 = %f\n", start->k_y);
+		ft_rotate_x(start);
+		ft_rotate_z(start);
+		start = start->next;
+	}
+}
+
+
 
 int		msg_que(t_img *tmp)
 {
@@ -269,9 +265,7 @@ int		deal_key(int key, t_img *tmp)
 	(*tmp).s_x = 0;
 	(*tmp).s_y = 0;
 	if (key == 53)
-	{
-		msg_que(tmp) ? destroy_msg(tmp) : 0;
-	}
+		(*tmp).mouse.button != 1 ? msg_que(tmp) : exit (0);
 	// key == 8 ? ft_clear_window(tmp) : 0;
 	key == 124 ? (*tmp).s_x += 5 : 0;
 	key == 123 ?( *tmp).s_x -= 5 : 0;
@@ -279,6 +273,7 @@ int		deal_key(int key, t_img *tmp)
 	key == 126 ? (*tmp).s_y -= 5 : 0;
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
+	key == 13 ? ft_rotate((*tmp).list) : 0;
 	ft_setpar(tmp);
 	if (!((*tmp).mouse.button))
 	{
@@ -304,7 +299,7 @@ int		deal_key(int key, t_img *tmp)
 // {
 // 	if (k == 1)
 // 	{
-		
+
 // 	}
 // }
 
@@ -337,14 +332,14 @@ int	mouse_move(int k, int x, int y, t_img *tmp)
 		// printf("x = %i y = %i\n", x ,y);
 		// (*tmp).s_x = x;
 		// (*tmp).s_y = y;
-		if (x > DL && y < 20)
+		if (x > DL + 50 && y < 25)
 		{
 			msg_que(tmp);
 		}
 	}
 	if (k == 1 && (*tmp).mouse.button)
 	{
-		if ((x > DL / 2 - 50 && x < DL / 2 + 140 && y > DW / 2 - 30 && y < DW / 2 + 10))
+		if ((x > DL / 2 + 45 && x < DL / 2 + 80 && y > DW / 2 + 6 && y < DW / 2 + 20))
 		{
 			mlx_destroy_image((*tmp).mlx_ptr, (*tmp).img.img_ptr);
 			mlx_destroy_window((*tmp).mlx_ptr, (*tmp).win_ptr);
