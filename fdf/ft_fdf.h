@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/17 22:12:31 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 12:48:35 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,28 @@ typedef struct	s_collect
 	struct s_collect	*next;
 }				t_collect;
 
+typedef struct	s_mouse 
+{
+	int			down;
+	int			up;
+	int			button;
+}				t_mouse;
+
 
 typedef struct	s_img
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_pol	img;
-	int		f_color;
-	int		f_gv;
-	int		s_x;
-	int		s_y;
-	int		zoom;
-	double	dlina;
-	int		shir;
-	t_collect list;
+	void		*mlx_ptr;
+	void		*win_ptr;
+	t_pol		img;
+	int			f_color;
+	int			f_gv;
+	int			s_x;
+	int			s_y;
+	int			zoom;
+	double		dlina;
+	int			shir;
+	t_collect	list;
+	t_mouse		mouse;
 }				t_img;
 
 int		ft_kolvo_int_in_line(char *str);

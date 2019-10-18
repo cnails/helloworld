@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/18 11:47:41 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/18 13:08:51 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,10 +249,10 @@ int		deal_key(int key, t_img *tmp)
 	 (*tmp).s_y = 0;
 	key == 53 ? exit (0) : 0;
 	key == 8 ? ft_clear_window(tmp) : 0;
-	key == 124 ? (*tmp).s_x += 3 : 0;
-	key == 123 ?( *tmp).s_x -= 3 : 0;
-	key == 125 ? (*tmp).s_y += 3 : 0;
-	key == 126 ? (*tmp).s_y -= 3 : 0;
+	key == 124 ? (*tmp).s_x += 5 : 0;
+	key == 123 ?( *tmp).s_x -= 5 : 0;
+	key == 125 ? (*tmp).s_y += 5 : 0;
+	key == 126 ? (*tmp).s_y -= 5 : 0;
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
 	ft_setpar(tmp);
@@ -261,17 +261,59 @@ int		deal_key(int key, t_img *tmp)
 	return (0);
 }
 
-void	mouse_key(int k, t_img *tmp)
+int	mouse_down(int k, int x, int y, t_img *tmp)
 {
+	// printf("1\n");
 	if (k == 1)
-	{
-
-	}
+		(*tmp).mouse.down = 1;
+	else
+		(*tmp).mouse.down = 0;
+	// printf("1\n");
+	return (0);
 }
 
-void	mouse_move(int k, t_img *tmp)
-{
+// void	mouse_down(int k, t_img *tmp)
+// {
+// 	if (k == 1)
+// 	{
+		
+// 	}
+// }
 
+void	ft_low_x(t_img *tmp)
+{
+	t_collect *start;
+	start = &tmp->list;
+	while (start->next)
+	{
+		start->x = 0;
+		start->y = 0;
+	}
+	start->x = 0;
+	start->y = 0;
+}
+
+int	mouse_move(int k, int x, int y, t_img *tmp)
+{
+	(*tmp).s_x = 0;
+	(*tmp).s_y = 0;
+	// printf("1\n");
+	if (k == 1 && (*tmp).mouse.down == 1)
+	{
+		ft_low_x(&tmp);
+		(*tmp).s_x = x;
+		(*tmp).s_y = y;
+	}
+	if (k == 2 && (*tmp).mouse.down == 0)
+	{
+		(*tmp).s_x = y;
+	}
+	// printf("1\n");
+	ft_setpar(tmp);
+	ft_clear_window(tmp);
+	ft_image(*tmp, &tmp->list);
+	(*tmp).mouse.down = 0;
+	return (0);
 }
 
 int main(int ac, char **av)
@@ -294,8 +336,9 @@ int main(int ac, char **av)
 	tmp.s_y = 0;
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
-//	mlx_mouse_hook(tmp.win_ptr, mouse_key, &tmp);
-//	mlx_mouse_hook(tmp.win_ptr, mouse_move, &tmp);
+	mlx_hook(tmp.win_ptr, 4, 5, mouse_down, &tmp);
+	// mlx_hook(tmp.win_ptr, 4, 0, mouse_up, &tmp);
+	mlx_hook(tmp.win_ptr, 5, 5, mouse_move, &tmp);
 	ft_image(tmp, col);
 	mlx_loop(tmp.mlx_ptr);
 	return (0);
