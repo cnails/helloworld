@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sgarry <sgarry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/17 22:34:53 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 11:47:41 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,37 +104,35 @@ void	ft_image(t_img tmp, t_collect *col)
 
 	i = 0;
 	tmp.f_gv = 0;
-	// printf("2\n");
-	// ft_start_0(col, "42.fdf", 2, &tmp);
-	// printf("1\n");
 	while (col->next != NULL)
 	{
-		i++;
-		// printf ("i = %i\ntmp.f_gv = %i\n", i , tmp.shir);
 		if (tmp.f_gv == 0)
 		{
-			if (i != tmp.shir)
+			i++;
 			col_1 = col->next;
 			tmp.f_gv = 1;
 		}
 		if (!col_1->next)
 			break ;
-		if (fabs(col_1->y - col->y) < fabs(col_1->x - col->x))
+		if (i != tmp.shir)
 		{
-			if (col->x > col_1->x)
-				ft_diagonal(col_1->x, col_1->y, col->x , col->y, tmp);
+			if (fabs(col_1->y - col->y) < fabs(col_1->x - col->x))
+			{
+				if (col->x > col_1->x)
+					ft_diagonal(col_1->x, col_1->y, col->x , col->y, tmp);
+					else
+					ft_diagonal(col->x , col->y, col_1->x, col_1->y, tmp);
+			}
 			else
-				ft_diagonal(col->x , col->y, col_1->x, col_1->y, tmp);
-		}
-		else
-		{
-			if (col->y > col_1->y)
-				ft_diagonal_1(col_1->x, col_1->y, col->x , col->y, tmp);
-			else
-				ft_diagonal_1(col->x , col->y, col_1->x, col_1->y, tmp);
+			{
+				if (col->y > col_1->y)
+					ft_diagonal_1(col_1->x, col_1->y, col->x , col->y, tmp);
+				else
+					ft_diagonal_1(col->x , col->y, col_1->x, col_1->y, tmp);
+				}
 		}
 		if (i == tmp.shir)
-			i = 0;
+		i = 0;
 		if (tmp.f_gv == 1)
 		{
 			if (col->svyaz)
@@ -142,6 +140,8 @@ void	ft_image(t_img tmp, t_collect *col)
 			tmp.f_gv = 2;
 			continue ;
 		}
+		if (i == tmp.shir)
+			i = 0;
 		col = col->next;
 		tmp.f_gv = 0;
 	}
@@ -213,28 +213,63 @@ void	ft_setpar(t_img *tmp)
 	}
 }
 
+void	ft_azoom(t_img *tmp)
+{
+	t_collect *start;
+
+	start = &tmp->list;
+	while (start->next)
+	{
+		start->y /= 1.2;
+		start->x /= 1.2;
+		start = start->next;
+	}
+	start->y /= 1.2;
+	start->x /= 1.2;
+}
+
+void	ft_zoom(t_img *tmp)
+{
+	t_collect *start;
+
+	start = &tmp->list;
+	while (start->next)
+	{
+		start->y *= 1.2;
+		start->x *= 1.2;
+		start = start->next;
+	}
+	start->y *= 1.2;
+	start->x *= 1.2;
+}
+
 int		deal_key(int key, t_img *tmp)
 {
-	(*tmp).s_x = 0;
-	(*tmp).s_y = 0;
+	 (*tmp).s_x = 0;
+	 (*tmp).s_y = 0;
 	key == 53 ? exit (0) : 0;
 	key == 8 ? ft_clear_window(tmp) : 0;
-	key == 124 ? (*tmp).s_x += 10 : 0;
-	key == 123 ?( *tmp).s_x -= 10 : 0;
-	key == 125 ? (*tmp).s_y += 10 : 0;
-	key == 126 ? (*tmp).s_y -= 10 : 0;
+	key == 124 ? (*tmp).s_x += 3 : 0;
+	key == 123 ?( *tmp).s_x -= 3 : 0;
+	key == 125 ? (*tmp).s_y += 3 : 0;
+	key == 126 ? (*tmp).s_y -= 3 : 0;
+	key == 12 ? ft_zoom(tmp) : 0;
+	key == 14 ? ft_azoom(tmp) : 0;
 	ft_setpar(tmp);
 	ft_clear_window(tmp);
 	ft_image(*tmp, &tmp->list);
 	return (0);
 }
 
-void	mouse_key()
+void	mouse_key(int k, t_img *tmp)
 {
+	if (k == 1)
+	{
 
+	}
 }
 
-void	mouse_move()
+void	mouse_move(int k, t_img *tmp)
 {
 
 }
@@ -258,9 +293,9 @@ int main(int ac, char **av)
 	tmp.s_x = 0;
 	tmp.s_y = 0;
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
-	mlx_key_hook(tmp.win_ptr, deal_key, (void*)&tmp);
-	mlx_mouse_hook(tmp.win_ptr, mouse_key, &tmp);
-	mlx_mouse_hook(tmp.win_ptr, mouse_move, &tmp);
+	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
+//	mlx_mouse_hook(tmp.win_ptr, mouse_key, &tmp);
+//	mlx_mouse_hook(tmp.win_ptr, mouse_move, &tmp);
 	ft_image(tmp, col);
 	mlx_loop(tmp.mlx_ptr);
 	return (0);

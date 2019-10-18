@@ -6,11 +6,12 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 19:27:52 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/17 22:10:53 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/18 11:28:41 by sgarry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
+#include <math.h>
 
 void		ft_kostil(void)
 {
@@ -70,7 +71,6 @@ int		ft_kolvo_int_in_line(char *str)
 		if (str[i])
 			i++;
 	}
-	printf("%s\n%i\n a = %li\n", str, kol, ft_strlen(str));
 	return (kol);
 }
 
@@ -160,9 +160,10 @@ t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp)
 		x = (*tmp).zoom;
 		while (x <= ft_kolvo_int_in_line(line) * (*tmp).zoom)
 		{
-			col->x = x;
-			col->y = y;
-			col->z = ft_collect_z(col->x, col->y, line, av, (*tmp));
+			col->x = (x - y) * cos(0.46373398);
+	//		col->y = y;
+			col->z = ft_collect_z(x, y, line, av, (*tmp));
+			col->y = -col->z + (x + y) * sin(0.46373398);
 			x += (*tmp).zoom;
 			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
 				return (NULL);
