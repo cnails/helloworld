@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/18 16:47:39 by sgarry           ###   ########.fr       */
+/*   Updated: 2019/10/19 13:08:22 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct	s_img
 	int			zoom;
 	double		dlina;
 	int			shir;
+	int			plus;
 	t_collect	list;
 	t_mouse		mouse;
 }				t_img;
