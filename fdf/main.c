@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/19 15:10:34 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/19 15:49:48 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,12 +179,15 @@ void	ft_azoom(t_img *tmp)
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->k_y -= start->k_y * 0.2;
-		start->k_x -= start->k_x * 0.2;
+		// if (start->k_x + start->x > 0)
+			// start->k_y -= start->y * 0.2;
+		start->k_x -= start->x * 0.2;
+		printf("k_x = %0.f\n", start->k_x);
 		start = start->next;
 	}
-	start->k_y -= start->k_y * 0.2;
-	start->k_x -= start->k_x * 0.2;
+	// if (start->k_y + start->y > 0)
+		// start->k_y -= start->y * 0.2;
+	start->k_x -= start->x * 0.2;
 }
 
 void	ft_zoom(t_img *tmp)
@@ -276,10 +279,10 @@ int		deal_key(int key, t_img *tmp)
 	if (key == 53)
 		(*tmp).mouse.button != 1 ? msg_que(tmp) : exit (0);
 	// key == 8 ? ft_clear_window(tmp) : 0;
-	key == 124 ? (*tmp).s_x += 5 : 0;
-	key == 123 ?( *tmp).s_x -= 5 : 0;
-	key == 125 ? (*tmp).s_y += 5 : 0;
-	key == 126 ? (*tmp).s_y -= 5 : 0;
+	key == 124 ? (*tmp).s_x += 8 : 0;
+	key == 123 ?( *tmp).s_x -= 8 : 0;
+	key == 125 ? (*tmp).s_y += 8 : 0;
+	key == 126 ? (*tmp).s_y -= 8 : 0;
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
 	key	== 0 ? (*tmp).plus += 5 : 0;
