@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 19:27:52 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/22 18:26:24 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 11:26:31 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,9 +160,11 @@ t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp)
 		x = (*tmp).zoom;
 		while (x <= ft_kolvo_int_in_line(line) * (*tmp).zoom)
 		{
-			col->x = (x - y) * cos(0.46373398);
+			// col->x = (x - y) * cos(0.46373398);
+			col->x = x;
 			col->z = ft_collect_z(x, y, line, av, (*tmp));
-			col->y = -col->z + (x + y) * sin(0.46373398);
+			// col->y = -col->z + (x + y) * sin(0.46373398);
+			col->y = y;
 			x += (*tmp).zoom;
 			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
 				return (NULL);

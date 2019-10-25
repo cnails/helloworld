@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/23 18:29:42 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 11:44:57 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,6 +247,10 @@ void 	ft_rotation_y(t_collect *list)
 	y = (*list).y;
 	(*list).y = y * cos(M_PI / 180 * 5) - (*list).z * sin(M_PI / 180 * 5);
 	(*list).z = y * sin(M_PI / 180 * 5) + (*list).z * cos(M_PI / 180 * 5);
+
+	// y = (*list).y;
+	// (*list).y = y * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
+	// (*list).z = y * sin(M_PI / 180 * 5) - (*list).z * cos(M_PI / 180 * 5);
 }
 
 void	ft_rotate_x(t_collect *list)
@@ -258,7 +262,7 @@ void	ft_rotate_x(t_collect *list)
 	// (*list).k_z = -x * sin (M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
 
 	x = (*list).x;
-	(*list).x = x * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
+	(*list).x = +x * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
 	(*list).z = -x * sin (M_PI / 180 * 5) + (*list).z * cos(M_PI / 180 * 5);
 }
 
@@ -276,6 +280,10 @@ void	ft_rotate_z(t_collect *list)
 	y = (*list).y;
 	(*list).x = x * cos(M_PI / 180 * 5) - y * sin(M_PI / 180 * 5);
 	(*list).y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
+	// x = (*list).x;
+	// y = (*list).y;
+	// (*list).x = +x * cos(M_PI / 180 * 5) + y * sin(M_PI / 180 * 5);
+	// (*list).y = -x * sin(M_PI / 180 * 5) - y * cos(M_PI / 180 * 5);
 }
 
 // void	ft_krug(t_collect *d)
@@ -304,21 +312,21 @@ void	ft_rotate_z(t_collect *list)
 // }
 
 
-void	ft_rotate(t_img *img)
+void	ft_rotate(t_img *img, char a)
 {
 	t_collect *start;
-	float a;
-
-	a = 7.5 * (M_PI / 180);
 	// a = 10;
 	start = &img->list;
 	while (start->next)
 	{
 		// start->k_x += a;
 		// start->k_y -= a;
-		ft_rotation_y(start);
-		ft_rotate_x(start);
-		ft_rotate_z(start);
+		if (a == 'z')
+			ft_rotate_z(start);
+		if (a == 'y')
+			ft_rotation_y(start);
+		if (a == 'x')
+			ft_rotate_x(start);
 		// ft_krug(start);
 		start = start->next;
 	}
@@ -362,8 +370,10 @@ int		deal_key(int key, t_img *tmp)
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
 	key	== 0 ? (*tmp).plus += 5 : 0;
-	key == 1 ? ft_low_x(tmp) : 0;
-	key == 13 ? ft_rotate(tmp) : 0;
+	// key == 1 ? ft_low_x(tmp) : 0;
+	key == 13 ? ft_rotate(tmp, 'z') : 0;
+	key == 1 ? ft_rotate(tmp, 'x') : 0;
+	key == 2 ? ft_rotate(tmp, 'y') : 0;
 	ft_setpar(tmp);
 	if (!((*tmp).mouse.button))
 	{

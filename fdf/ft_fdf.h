@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/19 13:08:22 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 11:35:34 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ typedef struct	s_img
 	int			s_y;
 	int			k_x;
 	int			k_y;
+	int			sred_x;
+	int			sred_y;
 	int			zoom;
 	double		dlina;
 	int			shir;
