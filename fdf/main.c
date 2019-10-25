@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/25 11:44:57 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 11:48:25 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,17 +194,29 @@ void	ft_azoom(t_img *tmp)
 
 void	ft_zoom(t_img *tmp)
 {
+	// t_collect *start;
+
+	// start = &tmp->list;
+	// while (start->next)
+	// {
+	// 	start->k_y += start->y * 0.3;
+	// 	start->k_x += start->x * 0.3;
+	// 	start = start->next;
+	// }
+	// start->k_y += start->y * 0.3;
+	// start->k_x += start->x * 0.3;
+
 	t_collect *start;
 
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->k_y += start->y * 0.3;
-		start->k_x += start->x * 0.3;
+		start->y *= 1.1;
+		start->x *= 1.1;
 		start = start->next;
 	}
-	start->k_y += start->y * 0.3;
-	start->k_x += start->x * 0.3;
+	// start->y += start->y * 0.3;
+	// start->x += start->x * 0.3;	
 }
 
 // void 	ft_rotation_y(t_collect *list)
