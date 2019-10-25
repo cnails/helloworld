@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 10:57:04 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/25 11:35:34 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 12:19:34 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ typedef struct	s_img
 	int			sred_y;
 	int			zoom;
 	double		dlina;
+	int			backgr;
 	int			shir;
-	int			plus;
 	t_collect	list;
 	t_mouse		mouse;
 }				t_img;
@@ -98,7 +98,7 @@ int		ft_kolvo_int_in_line(char *str);
 t_collect	*ft_svyaz(t_collect	*node, int x, int y);
 t_collect		*ft_get_svyaz(t_collect	*node, int x);
 void		ft_kostil(void);
-void	ft_start_0(t_collect *col, char *av, int ac, t_img *tmp);
+void	ft_start_0(t_collect *col, char *av, t_img *tmp);
 void	ft_setpam(t_img *tmp);
 
 // cc -I /usr/local/include/ main.c  -L libft -lft -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit

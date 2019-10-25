@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 19:27:52 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/25 11:26:31 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 12:45:02 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp)
 	return (head);
 }
 
-void	ft_start_0(t_collect *col, char *av, int ac, t_img *tmp)
+void	ft_start_0(t_collect *col, char *av, t_img *tmp)
 {
 	int			fd;
 	char		*line;
@@ -185,8 +185,6 @@ void	ft_start_0(t_collect *col, char *av, int ac, t_img *tmp)
 
 	fd = open("42.fdf", O_RDONLY);
 	get_next_line(fd, &line);
-	if (ac != 2)
-		av = "42.fdf";
 	col = ft_collect(line, col, fd, av, &(*tmp));
 	fd1 =  open("42.fdf", O_RDONLY);
 	kol = ft_kolvo_int_in_line(line);
@@ -194,5 +192,4 @@ void	ft_start_0(t_collect *col, char *av, int ac, t_img *tmp)
 	// printf("a = %i i = %i\n", ft_kolvo_int_in_line(line), ft_kolvo_line(fd1, line));
 	col = ft_svyaz(col, kol, ft_kolvo_line(fd1, line));
 	free(line);
-	ft_kostil();
 }

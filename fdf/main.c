@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/25 11:48:25 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 12:47:18 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ void ft_putchar(char c)
 	write (1, &c, 1);
 }
 
-void	ft_clear_window(t_img *tmp)
+void	ft_clear_window(t_img *tmp, int col)
 {
-	int		color = 0x0;
+	int		color;
 	int		i;
 	int		j;
 
+	color = col;
 	i = 0;
 	while (i < DL)
 	{
@@ -86,7 +87,7 @@ void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 	diag.x1 = x;
 	while (diag.y1 <= yo && diag.y1 > 0 && diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
 	{
-		tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFF0000;
+		tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFFFF00;
 		if (diag.d > 0)
 		{
 			diag.x1 = diag.x1 + diag.di;
@@ -94,6 +95,27 @@ void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 		}
 		diag.d = diag.d + 2 * diag.dx;
 		diag.y1++;
+	}
+}
+
+void	ft_check(t_img tmp, t_collect *col, t_collect *col_1, int i)
+{
+	if (i != tmp.shir)
+	{
+		if (fabs((col_1->y + col_1->k_y) - (col->y + col_1->k_y)) < fabs((col_1->x + col_1->k_x) - (col->x + col_1->k_x)))
+		{
+			if (col->x + col->k_x > col_1->x + col_1->k_x)
+				ft_diagonal(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
+			else
+				ft_diagonal(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
+		}
+		else
+		{
+			if (col->y + col->k_y > col_1->y + col_1->k_y)
+				ft_diagonal_1(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
+			else
+				ft_diagonal_1(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
+		}
 	}
 }
 
@@ -114,34 +136,16 @@ void	ft_image(t_img tmp, t_collect *col)
 		}
 		if (!col_1->next)
 			break ;
-		if (i != tmp.shir)
-		{
-			if (fabs((col_1->y + col_1->k_y) - (col->y + col_1->k_y)) < fabs((col_1->x + col_1->k_x) - (col->x + col_1->k_x)))
-			{
-				if (col->x + col->k_x > col_1->x + col_1->k_x)
-					ft_diagonal(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
-				else
-					ft_diagonal(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
-			}
-			else
-			{
-				if (col->y + col->k_y > col_1->y + col_1->k_y)
-					ft_diagonal_1(col_1->x + col_1->k_x, col_1->y + col_1->k_y, col->x + col->k_x , col->y + col->k_y, tmp);
-				else
-					ft_diagonal_1(col->x + col->k_x , col->y + col->k_y, col_1->x + col_1->k_x, col_1->y + col_1->k_y, tmp);
-			}
-		}
+		ft_check(tmp, col, col_1, i);
 		if (i == tmp.shir)
-		i = 0;
+			i = 0;
 		if (tmp.f_gv == 1)
 		{
-			if (col->svyaz)
-				col_1 = col->svyaz;
+			col->svyaz ? col_1 = col->svyaz : 0;
 			tmp.f_gv = 2;
 			continue ;
 		}
-		if (i == tmp.shir)
-			i = 0;
+		i == tmp.shir ? i = 0 : 0;
 		col = col->next;
 		tmp.f_gv = 0;
 	}
@@ -151,7 +155,7 @@ void	ft_image(t_img tmp, t_collect *col)
 
 void	destroy_msg(t_img *tmp)
 {
-	ft_clear_window(tmp);
+	ft_clear_window(tmp, 0x0);
 	ft_image(*tmp, &tmp->list);
 	(*tmp).mouse.button = 0;
 }
@@ -179,33 +183,14 @@ void	ft_azoom(t_img *tmp)
 	start = &tmp->list;
 	while (start->next)
 	{
-		// if (start->k_x + start->x > 0)
-			// start->k_y -= start->y * 0.2;
-		start->k_x -= start->x * 0.2;
-		// start->k_x = sin(start->y);
-		// printf("k_x = %0.f\n", start->k_x);
+		start->x *= 0.93;
+		start->y *= 0.93;
 		start = start->next;
 	}
-	// if (start->k_y + start->y > 0)
-		// start->k_y -= start->y * 0.2;
-	// start->k_x -= start->x * 0.2;
-	start->k_x = sin(start->y);
 }
 
 void	ft_zoom(t_img *tmp)
 {
-	// t_collect *start;
-
-	// start = &tmp->list;
-	// while (start->next)
-	// {
-	// 	start->k_y += start->y * 0.3;
-	// 	start->k_x += start->x * 0.3;
-	// 	start = start->next;
-	// }
-	// start->k_y += start->y * 0.3;
-	// start->k_x += start->x * 0.3;
-
 	t_collect *start;
 
 	start = &tmp->list;
@@ -215,148 +200,68 @@ void	ft_zoom(t_img *tmp)
 		start->x *= 1.1;
 		start = start->next;
 	}
-	// start->y += start->y * 0.3;
-	// start->x += start->x * 0.3;	
 }
-
-// void 	ft_rotation_y(t_collect *list)
-// {
-// 	double y;
-
-// 	y = (*list).k_y;
-// 	(*list).k_y = y * cos(M_PI / 180 * 5) - (*list).k_z * sin(M_PI / 180 * 5);
-// 	(*list).k_z = y * sin(M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
-// }
-
-// void	ft_rotate_x(t_collect *list)
-// {
-// 	double x;
-
-// 	x = (*list).k_x;
-// 	(*list).k_x = x * cos(M_PI / 180 * 5) + (*list).k_z * sin(M_PI / 180 * 5);
-// 	(*list).k_z = -x * sin (M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
-// }
-
-// void	ft_rotate_z(t_collect *list)
-// {
-// 	double x;
-// 	double y;
-
-// 	x = (*list).k_x;
-// 	y = (*list).k_y;
-// 	(*list).k_x = x * cos(M_PI / 180 * 5) - y * sin(M_PI / 180 * 5);
-// 	(*list).k_y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
-// }
 
 void 	ft_rotation_y(t_collect *list)
 {
 	double y;
-
-	// y = (*list).k_y;
-	// (*list).k_y = y * cos(M_PI / 180 * 5) - (*list).k_z * sin(M_PI / 180 * 5);
-	// (*list).k_z = y * sin(M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
-
+	
 	y = (*list).y;
 	(*list).y = y * cos(M_PI / 180 * 5) - (*list).z * sin(M_PI / 180 * 5);
 	(*list).z = y * sin(M_PI / 180 * 5) + (*list).z * cos(M_PI / 180 * 5);
-
-	// y = (*list).y;
-	// (*list).y = y * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
-	// (*list).z = y * sin(M_PI / 180 * 5) - (*list).z * cos(M_PI / 180 * 5);
 }
 
 void	ft_rotate_x(t_collect *list)
 {
 	double x;
 
-	// x = (*list).k_x;
-	// (*list).k_x = x * cos(M_PI / 180 * 5) + (*list).k_z * sin(M_PI / 180 * 5);
-	// (*list).k_z = -x * sin (M_PI / 180 * 5) + (*list).k_z * cos(M_PI / 180 * 5);
-
 	x = (*list).x;
 	(*list).x = +x * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
 	(*list).z = -x * sin (M_PI / 180 * 5) + (*list).z * cos(M_PI / 180 * 5);
+
 }
 
 void	ft_rotate_z(t_collect *list)
 {
 	double x;
 	double y;
-
-	// x = (*list).k_x;
-	// y = (*list).k_y;
-	// (*list).k_x = x * cos(M_PI / 180 * 5) - y * sin(M_PI / 180 * 5);
-	// (*list).k_y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
-
+	
 	x = (*list).x;
 	y = (*list).y;
 	(*list).x = x * cos(M_PI / 180 * 5) - y * sin(M_PI / 180 * 5);
 	(*list).y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
-	// x = (*list).x;
-	// y = (*list).y;
-	// (*list).x = +x * cos(M_PI / 180 * 5) + y * sin(M_PI / 180 * 5);
-	// (*list).y = -x * sin(M_PI / 180 * 5) - y * cos(M_PI / 180 * 5);
 }
 
-// void	ft_krug(t_collect *d)
-// {
-// 	float	a;
+void	ft_change_z(t_img *tmp)
+{
+	t_collect *start;
 
-// 	a = 7.5 * (M_PI / 180);
-// 	// if (axis == 'z' || axis == 'a')
-// 		d->k_z -= a;
-// 	// if (axis == 'y' || axis == 'a')
-// 		d->k_y -= a;
-// 	// if (axis == 'x' || axis == 'a')
-// 		d->k_x -= a;
-// 	while (d->k_x >= 2 * M_PI)
-// 		d->k_x -= 2 * M_PI;
-// 	while (d->k_y >= 2 * M_PI)
-// 		d->k_y -= 2 * M_PI;
-// 	while (d->k_z >= 2 * M_PI)
-// 		d->k_z -= 2 * M_PI;
-// 	// while (d->k_x < 0)
-// 		// d->k_x += 2 * M_PI;
-// 	// while (d->k_y < 0)
-// 		// d->k_y += 2 * M_PI;
-// 	// while (d->k_z < 0)
-// 		// d->k_z = 2 * M_PI;
-// }
-
+	start = &tmp->list;
+	while (start->next)
+	{
+		start->z *= 1.2;
+		// if (start->z > 400)
+		// 	start->z = 400;
+		start = start->next;
+	}
+	start->z *= 1.2;
+}
 
 void	ft_rotate(t_img *img, char a)
 {
 	t_collect *start;
-	// a = 10;
+
 	start = &img->list;
 	while (start->next)
 	{
-		// start->k_x += a;
-		// start->k_y -= a;
 		if (a == 'z')
 			ft_rotate_z(start);
 		if (a == 'y')
 			ft_rotation_y(start);
 		if (a == 'x')
 			ft_rotate_x(start);
-		// ft_krug(start);
 		start = start->next;
 	}
-}
-
-void	ft_low_x(t_img *tmp)
-{
-	t_collect *start;
-	
-	start = &tmp->list;
-	while (start->next)
-	{
-		start->k_x = 0;
-		start->k_y = 0;
-		start = start->next;
-	}
-	start->k_x = 0;
-	start->k_y = 0;
 }
 
 int		msg_que(t_img *tmp)
@@ -381,57 +286,27 @@ int		deal_key(int key, t_img *tmp)
 	key == 126 ? (*tmp).s_y -= 8 : 0;
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
-	key	== 0 ? (*tmp).plus += 5 : 0;
-	// key == 1 ? ft_low_x(tmp) : 0;
+	// key == 8 ? ft_default(tmp) : 0;
 	key == 13 ? ft_rotate(tmp, 'z') : 0;
 	key == 1 ? ft_rotate(tmp, 'x') : 0;
 	key == 2 ? ft_rotate(tmp, 'y') : 0;
+	key == 6 ? ft_change_z(tmp) : 0;
 	ft_setpar(tmp);
 	if (!((*tmp).mouse.button))
 	{
-		ft_clear_window(tmp);
+		ft_clear_window(tmp, 0x0);
 		mlx_clear_window((*tmp).mlx_ptr, (*tmp).win_ptr);
 		ft_image(*tmp, &tmp->list);
 	}
 	return (0);
 }
 
-// int	mouse_down(int k, int x, int y, t_img *tmp)
-// {
-// 	// printf("1\n");
-// 	if (k == 1)
-// 		(*tmp).mouse.down = 1;
-// 	else
-// 		(*tmp).mouse.down = 0;
-// 	// printf("1\n");
-// 	return (0);
-// }
-
-// void	mouse_down(int k, t_img *tmp)
-// {
-// 	if (k == 1)
-// 	{
-
-// 	}
-// }
-
-
 int	mouse_move(int k, int x, int y, t_img *tmp)
 {
 	(*tmp).s_x = 0;
 	(*tmp).s_y = 0;
-	// printf("1\n");
-	// if (k == 2)
-	// {
-	// 	(*tmp).s_x = (int)&tmp->list.x;
-	// 	(*tmp).s_y = (int)&tmp->list.y;
-	// }
 	if (k == 1  && !(*tmp).mouse.button)
 	{
-		// ft_low_x(tmp);
-		// printf("x = %i y = %i\n", x ,y);
-		// (*tmp).s_x = x;
-		// (*tmp).s_y = y;
 		if (x > DL + 50 && y < 25)
 		{
 			msg_que(tmp);
@@ -446,15 +321,8 @@ int	mouse_move(int k, int x, int y, t_img *tmp)
 			exit(0);
 		}
 		else if (x < DL + 50 && y > 20)
-		{
 			destroy_msg(tmp);
-		}
 	}
-	// ft_setpar(tmp);
-	// ft_clear_window(tmp);
-	// mlx_destroy_window((*tmp).mlx_ptr, (*tmp).win_ptr);
-	// mlx_clear_window((*tmp).mlx_ptr, (*tmp).win_ptr);
-	// ft_image(*tmp, &tmp->list);
 	return (0);
 }
 
@@ -470,19 +338,16 @@ int main(int ac, char **av)
 	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, DL, DW);
 	tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
 	tmp.zoom = 10;
-	ft_start_0(col, "42.fdf", ac, &tmp);
-	// printf ("%i\n", tmp.shir);
+	ft_start_0(col, "42.fdf", &tmp);
 	tmp.list = *col;
 	tmp.f_color	= 0;
 	tmp.s_x = 0;
 	tmp.s_y = 0;
-	tmp.plus = 0;
 	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
 	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
-	// mlx_hook(tmp.win_ptr, 4, 5, mouse_down, &tmp);
-	// mlx_hook(tmp.win_ptr, 4, 0, mouse_up, &tmp);
 	mlx_hook(tmp.win_ptr, 5, 2, mouse_move, &tmp);
 	ft_image(tmp, col);
 	mlx_loop(tmp.mlx_ptr);
+	ft_kostil();
 	return (0);
 }
