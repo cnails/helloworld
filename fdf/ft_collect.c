@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 19:27:52 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/25 12:45:02 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 17:47:57 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void		ft_kostil(void)
 {
-	int i = 15;
+	int i = 20;
 
 	while (i-- > 2)
 		close(i);
@@ -23,7 +23,6 @@ void		ft_kostil(void)
 
 t_collect		*ft_get_svyaz(t_collect	*node, int x)
 {
-
 	while (x--)
 		node = node->next;
 	return (node);
@@ -82,8 +81,10 @@ int			ft_kolvo_line(int fd, char *line)
 	while (get_next_line(fd, &line))
 	{
 		y++;
-		free(line);
+		// free(line);
 	}
+	// free(line);
+	// close(fd);
 	return (y);
 }
 
@@ -104,6 +105,10 @@ double		ft_getnbr(char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		nbr = nbr * 10 + str[i] - '0';
+		if (nbr > 20)
+			return (20);
+		if (nbr < -20)
+			return (-20);
 		i++;
 	}
 	return (nbr * sign);
@@ -135,13 +140,15 @@ double		ft_collect_z(double x, double y, char *line, char *av, t_img img)
 	int fd;
 
 	fd = open(av, O_RDONLY);
+	// if (fd < 0)
+	// 	return (0);
 	while (get_next_line(fd, &line) && y > img.zoom)
 	{
-		free(line);
+		// free(line);
 		y -= img.zoom;
 	}
 	z = ft_return_nbr(x, line, img);
-	free(line);
+	// free(line);
 	return (z);
 }
 
@@ -183,13 +190,16 @@ void	ft_start_0(t_collect *col, char *av, t_img *tmp)
 	int			fd1;
 	int			kol;
 
-	fd = open("42.fdf", O_RDONLY);
+	fd = open(av, O_RDONLY);
+	// if (fd < 0)
+	// 	exit(0);
 	get_next_line(fd, &line);
 	col = ft_collect(line, col, fd, av, &(*tmp));
-	fd1 =  open("42.fdf", O_RDONLY);
+	fd1 =  open(av, O_RDONLY);
 	kol = ft_kolvo_int_in_line(line);
 	(*tmp).shir = kol;
 	// printf("a = %i i = %i\n", ft_kolvo_int_in_line(line), ft_kolvo_line(fd1, line));
 	col = ft_svyaz(col, kol, ft_kolvo_line(fd1, line));
-	free(line);
+	// free(line);
+	// ft_kostil();
 }

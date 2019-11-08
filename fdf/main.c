@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/25 12:47:18 by cnails           ###   ########.fr       */
+/*   Updated: 2019/10/25 17:34:07 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,10 @@ void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 	diag.d = 2 * diag.dx - diag.dy;
 	diag.y1 = y;
 	diag.x1 = x;
-	while (diag.y1 <= yo && diag.y1 > 0 && diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
+	while (diag.y1 <= yo && diag.y1 > 0 )//&& diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
 	{
-		tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFFFF00;
+		if (diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
+			tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFFFF00;
 		if (diag.d > 0)
 		{
 			diag.x1 = diag.x1 + diag.di;
@@ -149,7 +150,7 @@ void	ft_image(t_img tmp, t_collect *col)
 		col = col->next;
 		tmp.f_gv = 0;
 	}
-	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
+	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 50, 50);
 	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, DL + 50, 5, 0xfffafa, "CLOSE");
 }
 
@@ -216,6 +217,7 @@ void	ft_rotate_x(t_collect *list)
 	double x;
 
 	x = (*list).x;
+	// printf("z = %f\n", (*list).z);
 	(*list).x = +x * cos(M_PI / 180 * 5) + (*list).z * sin(M_PI / 180 * 5);
 	(*list).z = -x * sin (M_PI / 180 * 5) + (*list).z * cos(M_PI / 180 * 5);
 
@@ -232,6 +234,13 @@ void	ft_rotate_z(t_collect *list)
 	(*list).y = x * sin(M_PI / 180 * 5) + y * cos(M_PI / 180 * 5);
 }
 
+void	ft_putin(t_img *tmp)
+{
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2, DW / 2 - 50, 0xfffafa, "P");
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2 + 10, DW / 2 - 50, 0x0000ff, "UT");
+	mlx_string_put((*tmp).mlx_ptr, (*tmp).win_ptr, DL / 2 + 30, DW / 2 - 50, 0xff0000, "IN");
+}
+
 void	ft_change_z(t_img *tmp)
 {
 	t_collect *start;
@@ -239,12 +248,10 @@ void	ft_change_z(t_img *tmp)
 	start = &tmp->list;
 	while (start->next)
 	{
-		start->z *= 1.2;
-		// if (start->z > 400)
-		// 	start->z = 400;
+		start->z *= 1.1;
 		start = start->next;
 	}
-	start->z *= 1.2;
+	start->z *= 1.1;
 }
 
 void	ft_rotate(t_img *img, char a)
@@ -286,6 +293,8 @@ int		deal_key(int key, t_img *tmp)
 	key == 126 ? (*tmp).s_y -= 8 : 0;
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
+	key == 35 ? ft_putin(tmp) : 0;
+	key == 40 ? ft_putin(tmp) : 0;
 	// key == 8 ? ft_default(tmp) : 0;
 	key == 13 ? ft_rotate(tmp, 'z') : 0;
 	key == 1 ? ft_rotate(tmp, 'x') : 0;
@@ -337,8 +346,8 @@ int main(int ac, char **av)
 	tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, DL + 100, DW + 100, "hello world");
 	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, DL, DW);
 	tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
-	tmp.zoom = 10;
-	ft_start_0(col, "42.fdf", &tmp);
+	tmp.zoom = 1;
+	ft_start_0(col, av[1], &tmp);
 	tmp.list = *col;
 	tmp.f_color	= 0;
 	tmp.s_x = 0;
