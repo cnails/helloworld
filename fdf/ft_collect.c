@@ -6,7 +6,7 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 19:27:52 by cnails            #+#    #+#             */
-/*   Updated: 2019/10/25 17:47:57 by cnails           ###   ########.fr       */
+/*   Updated: 2020/01/27 12:51:57 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,11 +167,11 @@ t_collect	*ft_collect(char *line, t_collect *col, int fd, char *av, t_img *tmp)
 		x = (*tmp).zoom;
 		while (x <= ft_kolvo_int_in_line(line) * (*tmp).zoom)
 		{
-			// col->x = (x - y) * cos(0.46373398);
-			col->x = x;
+			col->x = (x - y) * cos(0.46373398);
+			// col->x = x;
 			col->z = ft_collect_z(x, y, line, av, (*tmp));
-			// col->y = -col->z + (x + y) * sin(0.46373398);
-			col->y = y;
+			col->y = -col->z + (x + y) * sin(0.46373398);
+			// col->y = y;
 			x += (*tmp).zoom;
 			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
 				return (NULL);
@@ -195,8 +195,9 @@ void	ft_start_0(t_collect *col, char *av, t_img *tmp)
 	// 	exit(0);
 	get_next_line(fd, &line);
 	col = ft_collect(line, col, fd, av, &(*tmp));
-	fd1 =  open(av, O_RDONLY);
+	fd1 = open(av, O_RDONLY);
 	kol = ft_kolvo_int_in_line(line);
+	printf("kol = %d\n", kol);
 	(*tmp).shir = kol;
 	// printf("a = %i i = %i\n", ft_kolvo_int_in_line(line), ft_kolvo_line(fd1, line));
 	col = ft_svyaz(col, kol, ft_kolvo_line(fd1, line));

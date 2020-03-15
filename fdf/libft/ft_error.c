@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cnails <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/04 11:42:16 by cnails            #+#    #+#             */
-/*   Updated: 2019/09/09 17:36:18 by cnails           ###   ########.fr       */
+/*   Created: 2020/01/27 14:01:48 by cnails            #+#    #+#             */
+/*   Updated: 2020/01/27 14:07:11 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	ft_error(char *str)
 {
-	unsigned char	*a;
-	unsigned char	*b;
-
-	a = (unsigned char *)dest;
-	b = (unsigned char *)src;
-	if (!(a) && !(b))
-		return (NULL);
-	while (n-- > 0)
-		*a++ = *b++;
-	return (dest);
+	ft_putstr(str);
+	ft_putchar('\n');
+	exit(0);
 }

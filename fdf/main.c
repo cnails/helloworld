@@ -6,12 +6,43 @@
 /*   By: cnails <cnails@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:30:01 by sgarry            #+#    #+#             */
-/*   Updated: 2019/10/25 17:34:07 by cnails           ###   ########.fr       */
+/*   Updated: 2020/01/30 13:56:27 by cnails           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
 #include <math.h>
+
+t_collect		*ft_get_svyaz(t_collect	*node, int x)
+{
+	while (x--)
+		node = node->next;
+	return (node);
+}
+
+t_collect	*ft_svyaz(t_collect	*node, int x, int y)
+{
+	t_collect	*head;
+	t_int		i;
+
+	i.y = 0;
+	head = node;
+	// printf("x = %d\n", x);
+	// printf("y = %d\n", y);
+	while (i.y < y - 2)
+	{
+		i.x = 0;
+		while (i.x < x)
+		{
+			printf("x = %d\n", x);
+			node->svyaz = ft_get_svyaz(node, x);
+			node = node->next;
+			i.x++;
+		}
+		i.y++;
+	}
+	return (head);
+}
 
 void ft_putchar(char c)
 {
@@ -40,7 +71,7 @@ void	ft_clear_window(t_img *tmp, int col)
 //	mlx_put_image_to_window((*tmp).mlx_ptr, (*tmp).win_ptr, (*tmp).img.img_ptr, 0, 0);
 }
 
-void ft_diagonal(double x, double y, double xo, double yo, t_img tmp)
+void ft_diagonal(double x, double y, double xo, double yo, t_img *tmp)
 {
 	t_line diag;
 
@@ -57,7 +88,7 @@ void ft_diagonal(double x, double y, double xo, double yo, t_img tmp)
 	diag.x1 = x;
 	while (diag.x1 <= xo && diag.x1 > -(DW / 2 + 100) && diag.y1 > 0 && diag.y1 < DW && diag.x1 < DW + 100)
 	{
-		tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFF00FF;
+		tmp->img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFF00FF;
 		if (diag.d > 0)
 		{
 			diag.y1 = diag.y1 + diag.di;
@@ -70,7 +101,7 @@ void ft_diagonal(double x, double y, double xo, double yo, t_img tmp)
 }
 
 
-void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
+void ft_diagonal_1(double x, double y, double xo, double yo, t_img *tmp)
 {
 	t_line diag;
 
@@ -88,7 +119,7 @@ void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 	while (diag.y1 <= yo && diag.y1 > 0 )//&& diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
 	{
 		if (diag.x1 > -(DW / 2 + 100) && diag.y1 < DW && diag.x1 < DW + 100)
-			tmp.img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFFFF00;
+			tmp->img.img_data[diag.x1 + diag.y1 * DL + 2000] = 0xFFFF00;
 		if (diag.d > 0)
 		{
 			diag.x1 = diag.x1 + diag.di;
@@ -99,9 +130,9 @@ void ft_diagonal_1(double x, double y, double xo, double yo, t_img tmp)
 	}
 }
 
-void	ft_check(t_img tmp, t_collect *col, t_collect *col_1, int i)
+void	ft_check(t_img *tmp, t_collect *col, t_collect *col_1, int i)
 {
-	if (i != tmp.shir)
+	if (i != tmp->shir)
 	{
 		if (fabs((col_1->y + col_1->k_y) - (col->y + col_1->k_y)) < fabs((col_1->x + col_1->k_x) - (col->x + col_1->k_x)))
 		{
@@ -120,44 +151,44 @@ void	ft_check(t_img tmp, t_collect *col, t_collect *col_1, int i)
 	}
 }
 
-void	ft_image(t_img tmp, t_collect *col)
+void	ft_image(t_img *tmp, t_collect *col)
 {
 	t_collect	*col_1;
 	int			i;
 
 	i = 0;
-	tmp.f_gv = 0;
+	tmp->f_gv = 0;
 	while (col->next != NULL)
 	{
-		if (tmp.f_gv == 0)
+		if (tmp->f_gv == 0)
 		{
 			i++;
 			col_1 = col->next;
-			tmp.f_gv = 1;
+			tmp->f_gv = 1;
 		}
 		if (!col_1->next)
 			break ;
 		ft_check(tmp, col, col_1, i);
-		if (i == tmp.shir)
+		if (i == tmp->shir)
 			i = 0;
-		if (tmp.f_gv == 1)
+		if (tmp->f_gv == 1)
 		{
 			col->svyaz ? col_1 = col->svyaz : 0;
-			tmp.f_gv = 2;
+			tmp->f_gv = 2;
 			continue ;
 		}
-		i == tmp.shir ? i = 0 : 0;
+		i == tmp->shir ? i = 0 : 0;
 		col = col->next;
-		tmp.f_gv = 0;
+		tmp->f_gv = 0;
 	}
-	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 50, 50);
-	mlx_string_put(tmp.mlx_ptr, tmp.win_ptr, DL + 50, 5, 0xfffafa, "CLOSE");
+	mlx_put_image_to_window(tmp->mlx_ptr, tmp->win_ptr, tmp->img.img_ptr, 50, 50);
+	mlx_string_put(tmp->mlx_ptr, tmp->win_ptr, DL + 50, 5, 0xfffafa, "CLOSE");
 }
 
 void	destroy_msg(t_img *tmp)
 {
 	ft_clear_window(tmp, 0x0);
-	ft_image(*tmp, &tmp->list);
+	ft_image(tmp, &tmp->list);
 	(*tmp).mouse.button = 0;
 }
 
@@ -294,7 +325,7 @@ int		deal_key(int key, t_img *tmp)
 	key == 12 ? ft_zoom(tmp) : 0;
 	key == 14 ? ft_azoom(tmp) : 0;
 	key == 35 ? ft_putin(tmp) : 0;
-	key == 40 ? ft_putin(tmp) : 0;
+	// key == 1 ? ft_putin(tmp) : 0;
 	// key == 8 ? ft_default(tmp) : 0;
 	key == 13 ? ft_rotate(tmp, 'z') : 0;
 	key == 1 ? ft_rotate(tmp, 'x') : 0;
@@ -305,7 +336,7 @@ int		deal_key(int key, t_img *tmp)
 	{
 		ft_clear_window(tmp, 0x0);
 		mlx_clear_window((*tmp).mlx_ptr, (*tmp).win_ptr);
-		ft_image(*tmp, &tmp->list);
+		ft_image(tmp, &tmp->list);
 	}
 	return (0);
 }
@@ -335,28 +366,179 @@ int	mouse_move(int k, int x, int y, t_img *tmp)
 	return (0);
 }
 
-int main(int ac, char **av)
+int		ft_kolvo_int_in_line(char *str)
+{
+	int i;
+	int kol;
+	int a;
+
+	i = 0;
+	a = 0;
+	kol = 0;
+	while (str[i])
+	{
+		if (str[i] >= '0' && str[i] <= '9' && str[i])
+		{
+			while (str[i] >= '0' && str[i] <= '9' && str[i])
+				i++;
+			kol++;
+		}
+		if (str[i])
+			i++;
+	}
+	return (kol);
+}
+
+int		check_valid(int fd, t_img *tmp)
+{
+	char	*line;
+	int		lines;
+	int		kolvo;
+	int		shir;
+
+	shir = 0;
+	while ((lines = get_next_line(fd, &line)))
+	{
+		kolvo = ft_kolvo_int_in_line(line);
+		if (tmp->dlina == 0)
+			tmp->dlina = kolvo;
+		else
+		{
+			if (kolvo != tmp->dlina)
+				return (-1);
+		}
+		shir++;
+		free(line);
+	}
+	tmp->shir = shir;
+	return (lines);
+}    
+
+// int		ft_col_z(t_collect *col, char *str)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	// i = ft_atoi(str);
+// }
+
+t_collect		*ft_new_collect(int fd, t_img *img)
 {
 	t_collect	*col;
-	t_img		tmp;
+	t_collect	*head;
+	char		*line;
+	int			i;
+	int			x;
+	int			y;
 
-	if (!(col = (t_collect *)ft_memalloc(sizeof(t_collect))))
-		return (0);
-	tmp.mlx_ptr = mlx_init();
-	tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, DL + 100, DW + 100, "hello world");
-	tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, DL, DW);
-	tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
-	tmp.zoom = 1;
-	ft_start_0(col, av[1], &tmp);
-	tmp.list = *col;
-	tmp.f_color	= 0;
-	tmp.s_x = 0;
-	tmp.s_y = 0;
-	mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
-	mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
-	mlx_hook(tmp.win_ptr, 5, 2, mouse_move, &tmp);
-	ft_image(tmp, col);
-	mlx_loop(tmp.mlx_ptr);
-	ft_kostil();
-	return (0);
+	col = (t_collect *)ft_memalloc(sizeof(t_collect));
+	head = col;
+	i = 0;
+	y = 0;
+	printf("here\n");
+	while (get_next_line(fd, &line))
+	{
+		i = 0;
+		x = 0;
+		while (line[i])
+		{
+			while (line[i] == ' ' && line[i])
+				i++;
+			col->x = x;// - img->dlina / 2;
+			col->z = ft_atoi(line);
+			col->y = y;// - img->shir / 2;
+			// printf("%.0f ", col->x);
+			// printf("%.0f ", col->y);
+			printf("%.0f\n", col->z);
+			while (((line[i] >= '0' && line[i] <= '9') || line[i] == '-') && line[i])
+				i++;
+			x += img->zoom;
+			if (!(col->next = (t_collect *)ft_memalloc(sizeof(t_collect))))
+				return (NULL);
+			col = col->next;
+		}
+		printf("\n");
+		y += img->zoom;
+	}
+	col->next = NULL;
+	return (head);
+}
+
+
+// int main(int ac, char **av)
+// {
+// 	t_collect	*col;
+// 	t_img		tmp;
+
+// 	if (ac == 2)
+// 	{
+// 		if (!(col = (t_collect *)ft_memalloc(sizeof(t_collect))))
+// 			return (0);
+// 		tmp.mlx_ptr = mlx_init();
+// 		tmp.win_ptr = mlx_new_window(tmp.mlx_ptr, DL + 100, DW + 100, "hello world");
+// 		tmp.img.img_ptr = mlx_new_image(tmp.mlx_ptr, DL, DW);
+// 		tmp.img.img_data = (int *)mlx_get_data_addr(tmp.img.img_ptr, &tmp.img.bpp, &tmp.img.size_line, &tmp.img.endian);
+// 		tmp.zoom = 1;
+// 		ft_start_0(col, av[1], &tmp);
+// 		tmp.list = *col;
+// 		tmp.f_color	= 0;
+// 		tmp.s_x = 0;
+// 		tmp.s_y = 0;
+// 		mlx_put_image_to_window(tmp.mlx_ptr, tmp.win_ptr, tmp.img.img_ptr, 0, 0);
+// 		mlx_hook(tmp.win_ptr, 2, 5, deal_key, (void*)&tmp);
+// 		mlx_hook(tmp.win_ptr, 5, 2, mouse_move, &tmp);
+// 		ft_image(tmp, col);
+// 		mlx_loop(tmp.mlx_ptr);
+// 		ft_kostil();
+// 		return (0);
+// 	}
+// }
+
+void	init_map(t_img *img, t_collect *col)
+{
+	img->mlx_ptr = mlx_init();
+	img->win_ptr = mlx_new_window(img->mlx_ptr, DL + 100, DW + 100, "fdf");
+	img->img.img_ptr = mlx_new_image(img->mlx_ptr, DL, DW);
+	img->img.img_data = (int *)mlx_get_data_addr(img->img.img_ptr, &img->img.bpp, &img->img.size_line, &img->img.endian);
+	img->zoom = 5;
+	img->list = *col;
+	img->f_color = 0;
+	img->s_x = 0;
+	img->s_y = 0;
+	mlx_put_image_to_window(img->mlx_ptr, img->win_ptr, img->img.img_ptr, 0, 0);
+	mlx_hook(img->win_ptr, 2, 5, deal_key, (void*)img);
+	mlx_hook(img->win_ptr, 5, 2, mouse_move, img);
+	ft_image(img, col);
+	mlx_loop(img->mlx_ptr);
+}
+
+int		main(int ac, char **av)
+{
+	int			fd;
+	t_img		img;
+	t_collect	*col;
+
+	img.dlina = 0;
+	if (ac != 2)
+		ft_error("usage: ./fdf map.fdf");
+	fd = open(av[1], O_RDONLY);
+	if (fd < 0)
+		ft_error("invalid map");
+	if (check_valid(fd, &img) == -1)
+		ft_error("invalid map");
+	// close(fd);
+	fd = open(av[1], O_RDONLY);
+	printf("debug\n");
+	col = ft_new_collect(fd, &img);
+	if (!col)
+		ft_error("invalid map");
+	printf("debug\n");
+	col = ft_svyaz(col, img.dlina, img.shir);
+	printf("debug\n");
+	if (!col)
+		ft_error("invalid map");
+	close(fd);
+	init_map(&img, col);
+	// ft_image(&img, col);
+	// mlx_loop(img.mlx_ptr);
 }
